@@ -8,39 +8,52 @@ import com.uca.parcialfinalncapas.exceptions.UserNotFoundException;
 import com.uca.parcialfinalncapas.repository.UserRepository;
 import com.uca.parcialfinalncapas.service.UserService;
 import com.uca.parcialfinalncapas.utils.mappers.UserMapper;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder encoder;   // <─ inyectado desde SecurityConfig
 
     @Override
     public UserResponse findByCorreo(String correo) {
-        return UserMapper.toDTO(userRepository.findByCorreo(correo)
-                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado con correo: " + correo)));
+        return UserMapper.toDTO(
+                userRepository.findByCorreo(correo)
+                        .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado con correo: " + correo))
+        );
     }
 
     @Override
-    public UserResponse save(UserCreateRequest user) {
+    public UserResponse save(UserCreateRequest request) {
 
-        if (userRepository.findByCorreo(user.getCorreo()).isPresent()) {
-            throw new UserNotFoundException("Ya existe un usuario con el correo: " + user.getCorreo());
+        if (userRepository.findByCorreo(request.getCorreo()).isPresent()) {
+            throw new UserNotFoundException("Ya existe un usuario con el correo: " + request.getCorreo());
         }
 
-        return UserMapper.toDTO(userRepository.save(UserMapper.toEntityCreate(user)));
+        /* --------- aquí encriptamos --------- */
+        String hashed = encoder.encode(request.getPassword());
+        User entity = UserMapper.toEntityCreate(request);
+        entity.setPassword(hashed);
+
+        return UserMapper.toDTO(userRepository.save(entity));
     }
 
     @Override
-    public UserResponse update(UserUpdateRequest user) {
-        if (userRepository.findById(user.getId()).isEmpty()) {
-            throw new UserNotFoundException("No se encontró un usuario con el ID: " + user.getId());
+    public UserResponse update(UserUpdateRequest request) {
+
+        if (userRepository.findById(request.getId()).isEmpty()) {
+            throw new UserNotFoundException("No se encontró un usuario con el ID: " + request.getId());
         }
 
-        return UserMapper.toDTO(userRepository.save(UserMapper.toEntityUpdate(user)));
+        return UserMapper.toDTO(
+                userRepository.save(UserMapper.toEntityUpdate(request))
+        );
     }
 
     @Override
