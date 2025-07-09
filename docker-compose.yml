@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+
+  db:
+    image: postgres:16
+    container_name: postgres_demo
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: parcial
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  app:
+    build: .
+    container_name: parcial_app
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/parcial
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_PROFILES_ACTIVE: prod
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+
+volumes:
+  dbdata:
