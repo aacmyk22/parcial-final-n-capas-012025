@@ -8,7 +8,7 @@ Este repositorio contiene un proyecto para evaluar y practicar los conceptos de 
 - Sección: 02
 ---
 ## Como ejecutar?
-###Abrir terminal dentro de intellij y ejecutar los siguientes comandos en orden
+### Abrir terminal dentro de intellij y ejecutar los siguientes comandos en orden
 -docker compose build  
 -docker compose up -d 
 -docker compose logs -f app  
