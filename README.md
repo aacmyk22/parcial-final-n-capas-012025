@@ -7,6 +7,12 @@ Este repositorio contiene un proyecto para evaluar y practicar los conceptos de 
 - **Nombre del estudiante 2**: Anthony Alexander Canales Martinez - 00093122
 - Sección: 02
 ---
+## Como ejecutar?
+###Abrir terminal dentro de intellij y ejecutar los siguientes comandos en orden
+-docker compose build  
+-docker compose up -d 
+-docker compose logs -f app  
+-luego porbar directamente en insomnia/postman 
 
 ### Tenganos compasion :(
 
