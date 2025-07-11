@@ -10,7 +10,7 @@ Este repositorio contiene un proyecto para evaluar y practicar los conceptos de 
 ## Como ejecutar?
 ### Abrir terminal dentro de intellij y ejecutar los siguientes comandos en orden
 -docker compose build  
--docker compose up -d 
+-docker compose up -d   
 -docker compose logs -f app  
 -luego porbar directamente en insomnia/postman 
 
